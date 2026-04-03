@@ -116,11 +116,15 @@
     }
 
     /* ─── Track line ─── */
+    /*
+      top: aligns with badge center.
+      Name is 24px line-height + 20px gap before badge + half badge height (16.5px) ≈ 61px.
+    */
     .tl-track {
       position: absolute;
-      top: 17px;               /* center of pill badge (~34px tall) */
-      left:  calc(100% / 6);  /* center of col 1 in equal 3-col grid */
-      right: calc(100% / 6);  /* mirror for col 3 */
+      top: 61px;
+      left:  calc(100% / 6);
+      right: calc(100% / 6);
       height: 1px;
       background: var(--track);
       z-index: 0;
@@ -138,32 +142,38 @@
     .tl-phases {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      column-gap: 24px;
+      column-gap: 60px;
     }
 
+    /* Each phase is a centered column: name → badge → body → connector */
     .tl-phase {
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
-      padding: 0 16px;
+      gap: 20px;
     }
 
-    /* ─── Dot pill (desktop) ─── */
+    /* ─── Phase name (always visible, sits above badge) ─── */
+    .tl-phase__name {
+      font-family: 'League Spartan', sans-serif;
+      font-size: 1.375rem;
+      font-weight: 600;
+      color: var(--white);
+      line-height: 1.22;
+    }
+
+    /* ─── Dot (badge wrapper) ─── */
     .tl-dot {
       position: relative;
       z-index: 2;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 28px;
       flex-shrink: 0;
     }
 
-    /* "MONTH" eyebrow — mobile only */
-    .tl-dot__tag { display: none; }
-
-    /* Pill badge — desktop; solid bg so track line doesn't bleed through */
+    /* Pill badge — solid bg so track line doesn't bleed through */
     .tl-dot__badge {
       background: var(--navy);
       border: 1.5px solid rgba(255,255,255,0.2);
@@ -172,7 +182,7 @@
       transition: border-color 0.4s ease, background 0.4s ease;
     }
 
-    /* Full label text (desktop) */
+    /* Full label text */
     .tl-dot__long {
       display: block;
       font-family: 'Roboto', sans-serif;
@@ -185,10 +195,7 @@
       transition: color 0.4s ease;
     }
 
-    /* Short number (mobile only) */
-    .tl-dot__short { display: none; }
-
-    /* Connector line (mobile only) */
+    /* Connector line — mobile only, hidden on desktop */
     .tl-dot__connector { display: none; }
 
     /* Lit state */
@@ -200,19 +207,10 @@
       color: var(--blue);
     }
 
-    /* ─── Phase content ─── */
+    /* ─── Phase body (fades in per-phase) ─── */
     .tl-phase__content {
       opacity: 0;
       transform: translateY(16px);
-    }
-
-    .tl-phase__name {
-      font-family: 'League Spartan', sans-serif;
-      font-size: 1.375rem;
-      font-weight: 800;
-      color: var(--white);
-      line-height: 1.22;
-      margin-bottom: 12px;
     }
 
     .tl-phase__body {
@@ -251,7 +249,7 @@
       transform: translateY(14px);
     }
 
-    /* Pill button — green per updated brand */
+    /* Pill button */
     .tl-btn {
       display: inline-block;
       background: var(--green);
@@ -261,12 +259,12 @@
       font-weight: 900;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      padding: 11px 30px;
+      padding: 14.5px 30px;
       border: none;
       border-radius: 50px;
       text-decoration: none;
       cursor: pointer;
-      min-width: 146px;
+      min-width: 200px;
       transition: background 0.2s;
     }
 
@@ -290,6 +288,7 @@
 
       .tl-eyebrow { font-size: 11px; letter-spacing: 0.08em; }
 
+      /* Hide desktop horizontal track; mobile uses per-phase connectors */
       .tl-track { display: none; }
 
       .tl-phases {
@@ -297,79 +296,34 @@
         gap: 0;
       }
 
+      /* Mobile: centered column — name → badge → body → connector */
       .tl-phase {
-        flex-direction: row;
-        align-items: flex-start;
-        text-align: left;
-        gap: 20px;
-        padding: 0;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 5px;
+        padding: 5px 0;
       }
 
-      /* ── Mobile dot: column layout ── */
+      /* Mobile dot: just the pill badge, centered */
       .tl-dot {
         flex-direction: column;
         align-items: center;
         gap: 5px;
-        width: 48px;
-        padding: 5px 0;
-        margin-bottom: 0;
-      }
-
-      /* "MONTH" label above circle — mobile only, starts dim */
-      .tl-dot__tag {
-        display: block;
-        font-family: 'Roboto', sans-serif;
-        font-size: 10px;
-        font-weight: 700;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: rgba(255,255,255,0.3);
-        white-space: nowrap;
-        transition: color 0.4s ease;
-      }
-
-      /* Pill → circle transformation, starts dim */
-      .tl-dot__badge {
-        background: rgba(255,255,255,0.04);
-        border: 1.5px solid rgba(255,255,255,0.2);
-        border-radius: 24px;
+        width: auto;
         padding: 0;
-        width: 48px;
-        height: 48px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
       }
 
-      /* Hide long label on mobile */
-      .tl-dot__long { display: none; }
+      /* Badge stays as pill on mobile — no circle transform */
+      /* Lit state: same as desktop (#14243f bg, blue border) */
 
-      /* Show number on mobile, starts dim */
-      .tl-dot__short {
-        display: block;
-        font-family: 'Roboto', sans-serif;
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        color: rgba(255,255,255,0.3);
-        transition: color 0.4s ease;
-      }
-
-      /* Mobile lit state overrides */
-      .tl-dot.is-lit .tl-dot__badge {
-        background: rgba(0,177,255,0.07);
-        border-color: var(--blue);
-      }
-      .tl-dot.is-lit .tl-dot__tag  { color: var(--blue); }
-      .tl-dot.is-lit .tl-dot__short { color: var(--blue); }
-
-      /* Connector line below circle — track + animated fill */
+      /* Connector line after body text, connecting to next phase */
       .tl-dot__connector {
         display: block;
         position: relative;
         width: 2px;
-        height: 99px;
-        background: var(--track);   /* dim track layer */
+        height: 60px;
+        background: var(--track);
         flex-shrink: 0;
         overflow: hidden;
       }
@@ -383,20 +337,11 @@
         transform-origin: top center;
       }
 
-      /* Content always visible inside the animated phase wrapper */
-      .tl-phase__content {
-        opacity: 1;
-        transform: none;
-      }
-
       /* Divider hidden on mobile; CTA gets its own top spacing */
       .tl-divider { display: none; }
       .tl-cta { margin-top: 48px; }
 
-      .tl-phase__name {
-        font-size: 1.25rem;
-        margin-bottom: 5px;
-      }
+      .tl-phase__name { font-size: 1.25rem; }
       .tl-phase__body { font-size: 14px; }
     }
 
@@ -418,10 +363,9 @@
       @media (max-width: 767px) {
         .tl-phase { opacity: 1 !important; transform: none !important; }
         .tl-dot__badge {
-          background: rgba(0,177,255,0.07) !important;
+          background: #14243f !important;
           border-color: var(--blue) !important;
         }
-        .tl-dot__tag, .tl-dot__short { color: var(--blue) !important; }
         .tl-dot__connector-fill { transform: scaleY(1) !important; }
       }
     }
@@ -455,54 +399,48 @@
 
             <!-- Phase 01 -->
             <div class="tl-phase">
+              <h3 class="tl-phase__name">Month 1</h3>
               <div class="tl-dot" id="dot1" aria-hidden="true">
-                <span class="tl-dot__tag">Month</span>
                 <div class="tl-dot__badge">
-                  <span class="tl-dot__long">Month 1</span>
-                  <span class="tl-dot__short">1</span>
-                </div>
-                <div class="tl-dot__connector" id="conn1">
-                  <div class="tl-dot__connector-fill"></div>
+                  <span class="tl-dot__long">The loading phase</span>
                 </div>
               </div>
               <div class="tl-phase__content" id="content1">
-                <h3 class="tl-phase__name">The Loading Phase</h3>
                 <p class="tl-phase__body">Your body begins absorbing clinical doses of Shoden&reg; Ashwagandha and shilajit, laying the groundwork for steady energy, sharp focus, and balanced mood.<sup>*</sup></p>
+              </div>
+              <div class="tl-dot__connector" id="conn1" aria-hidden="true">
+                <div class="tl-dot__connector-fill"></div>
               </div>
             </div>
 
             <!-- Phase 02 -->
             <div class="tl-phase">
+              <h3 class="tl-phase__name">Months 2&ndash;3</h3>
               <div class="tl-dot" id="dot2" aria-hidden="true">
-                <span class="tl-dot__tag">Months</span>
                 <div class="tl-dot__badge">
-                  <span class="tl-dot__long">Months 2&ndash;3</span>
-                  <span class="tl-dot__short">2&ndash;3</span>
-                </div>
-                <div class="tl-dot__connector" id="conn2">
-                  <div class="tl-dot__connector-fill"></div>
+                  <span class="tl-dot__long">Clinical results</span>
                 </div>
               </div>
               <div class="tl-phase__content" id="content2">
-                <h3 class="tl-phase__name">Clinical Results</h3>
                 <p class="tl-phase__body">You&rsquo;ve reached clinical efficacy&mdash;<strong>up to 33% higher testosterone in 60&nbsp;days.</strong><sup>&dagger;</sup> Strength and stamina have made a comeback, cortisol levels are in check, and &ldquo;male drive&rdquo; is up.<sup>*</sup></p>
+              </div>
+              <div class="tl-dot__connector" id="conn2" aria-hidden="true">
+                <div class="tl-dot__connector-fill"></div>
               </div>
             </div>
 
             <!-- Phase 03 -->
             <div class="tl-phase">
+              <h3 class="tl-phase__name">Months 6+</h3>
               <div class="tl-dot" id="dot3" aria-hidden="true">
-                <span class="tl-dot__tag">Months</span>
                 <div class="tl-dot__badge">
-                  <span class="tl-dot__long">Months 6+</span>
-                  <span class="tl-dot__short">6+</span>
+                  <span class="tl-dot__long">Peak performance</span>
                 </div>
-                <!-- no connector on last phase -->
               </div>
               <div class="tl-phase__content" id="content3">
-                <h3 class="tl-phase__name">Peak Performance</h3>
                 <p class="tl-phase__body">Consistency is king. Your vitality and energy aren&rsquo;t just spikes anymore&mdash;they&rsquo;re your new baseline. You&rsquo;re no longer reliving the glory days; you&rsquo;re making new ones. Don&rsquo;t let off the gas.</p>
               </div>
+              <!-- no connector on last phase -->
             </div>
 
           </div>
@@ -513,7 +451,7 @@
 
         <!-- ── CTA ── -->
         <div class="tl-cta" id="tlCta">
-          <a class="tl-btn" href="#">Start Today</a>
+          <a class="tl-btn" href="#">Start Now</a>
         </div>
 
       </div>
@@ -601,23 +539,21 @@
         scrollTrigger: { trigger: '.tl-header', start: 'top 85%' }
       });
 
-      // Phases — each row fades + slides in; dot lights up on enter;
-      // connector to the NEXT phase fills as that phase comes into view
+      // Phases — name + badge always visible; body fades in; dot lights up; connector fills
       document.querySelectorAll('.tl-phase').forEach((phase, i) => {
-        const n     = i + 1;
-        const dotId = 'dot' + n;
+        const n       = i + 1;
+        const dotId   = 'dot' + n;
+        const content = document.getElementById('content' + n);
 
-        gsap.set(phase, { opacity: 0, y: 22 });
-
-        gsap.to(phase, {
+        gsap.to(content, {
           opacity: 1, y: 0, ease: 'power2.out', duration: 0.55,
           scrollTrigger: {
             trigger: phase,
-            start: 'top 82%',
+            start: 'top 80%',
             onEnter: () => {
               // Light up this dot
               document.getElementById(dotId).classList.add('is-lit');
-              // Fill the connector that leads INTO this phase (i > 0)
+              // Fill the connector that leads out of the PREVIOUS phase (i > 0)
               if (i > 0) {
                 const prevFill = document.querySelector('#conn' + i + ' .tl-dot__connector-fill');
                 if (prevFill) {
