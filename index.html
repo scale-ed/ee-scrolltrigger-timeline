@@ -129,6 +129,7 @@
       background: var(--track);
       z-index: 0;
       overflow: hidden;
+      opacity: 0;
     }
 
     .tl-track__fill {
@@ -154,13 +155,15 @@
       gap: 20px;
     }
 
-    /* ─── Phase name (always visible, sits above badge) ─── */
+    /* ─── Phase name ─── */
     .tl-phase__name {
       font-family: 'League Spartan', sans-serif;
       font-size: 1.375rem;
       font-weight: 600;
       color: var(--white);
       line-height: 1.22;
+      opacity: 0;
+      transform: translateY(10px);
     }
 
     /* ─── Dot (badge wrapper) ─── */
@@ -171,6 +174,7 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      opacity: 0;
     }
 
     /* Pill badge — solid bg so track line doesn't bleed through */
@@ -348,24 +352,20 @@
     /* ─── Reduced motion ─── */
     @media (prefers-reduced-motion: reduce) {
       .tl-eyebrow, .tl-title,
+      .tl-phase__name, .tl-dot,
       .tl-phase__content, .tl-cta {
         opacity: 1 !important;
         transform: none !important;
         transition: none !important;
       }
-      /* Desktop: all dots lit */
+      .tl-track { opacity: 1 !important; }
+      /* All dots lit */
       .tl-dot__badge {
         background: #14243f !important;
         border-color: var(--blue) !important;
       }
       .tl-dot__long { color: var(--blue) !important; }
-      /* Mobile: all dots lit */
       @media (max-width: 767px) {
-        .tl-phase { opacity: 1 !important; transform: none !important; }
-        .tl-dot__badge {
-          background: #14243f !important;
-          border-color: var(--blue) !important;
-        }
         .tl-dot__connector-fill { transform: scaleY(1) !important; }
       }
     }
@@ -503,6 +503,11 @@
       tl.to('.tl-eyebrow', { opacity: 1, y: 0, ease: 'power2.out', duration: 0.08 }, 0.00)
         .to('.tl-title',   { opacity: 1, y: 0, ease: 'power2.out', duration: 0.10 }, 0.03);
 
+      /* 0.10–0.12 : Reveal track + month names + badges */
+      tl.to('.tl-track',       { opacity: 1, ease: 'power2.out', duration: 0.06 }, 0.10)
+        .to('.tl-phase__name', { opacity: 1, y: 0, ease: 'power2.out', duration: 0.08, stagger: 0.02 }, 0.10)
+        .to('.tl-dot',         { opacity: 1, ease: 'power2.out', duration: 0.08, stagger: 0.02 }, 0.10);
+
       /* 0.12–0.26 : Phase 01 */
       tl.to('#tlFill',    { width: '0%',  duration: 0.01 }, 0.12)
         .to('#content1',  { opacity: 1, y: 0, ease: 'power2.out', duration: 0.14 }, 0.14);
@@ -539,30 +544,32 @@
         scrollTrigger: { trigger: '.tl-header', start: 'top 85%' }
       });
 
-      // Phases — name + badge always visible; body fades in; dot lights up; connector fills
+      // Phases — name + badge fade in first, then body text; dot lights up; connector fills
       document.querySelectorAll('.tl-phase').forEach((phase, i) => {
         const n       = i + 1;
         const dotId   = 'dot' + n;
         const content = document.getElementById('content' + n);
+        const name    = phase.querySelector('.tl-phase__name');
+        const dot     = document.getElementById(dotId);
 
-        gsap.to(content, {
-          opacity: 1, y: 0, ease: 'power2.out', duration: 0.55,
-          scrollTrigger: {
-            trigger: phase,
-            start: 'top 80%',
-            onEnter: () => {
-              // Light up this dot
-              document.getElementById(dotId).classList.add('is-lit');
-              // Fill the connector that leads out of the PREVIOUS phase (i > 0)
-              if (i > 0) {
-                const prevFill = document.querySelector('#conn' + i + ' .tl-dot__connector-fill');
-                if (prevFill) {
-                  gsap.to(prevFill, { scaleY: 1, ease: 'none', duration: 0.45 });
-                }
-              }
+        const trigger = {
+          trigger: phase,
+          start: 'top 80%',
+          onEnter: () => {
+            dot.classList.add('is-lit');
+            if (i > 0) {
+              const prevFill = document.querySelector('#conn' + i + ' .tl-dot__connector-fill');
+              if (prevFill) gsap.to(prevFill, { scaleY: 1, ease: 'none', duration: 0.45 });
             }
           }
-        });
+        };
+
+        // Name + badge reveal
+        gsap.to(name, { opacity: 1, y: 0, ease: 'power2.out', duration: 0.45, scrollTrigger: trigger });
+        gsap.to(dot,  { opacity: 1, ease: 'power2.out', duration: 0.45, delay: 0.08, scrollTrigger: trigger });
+
+        // Body text — slightly after
+        gsap.to(content, { opacity: 1, y: 0, ease: 'power2.out', duration: 0.55, delay: 0.15, scrollTrigger: trigger });
       });
 
       // CTA
