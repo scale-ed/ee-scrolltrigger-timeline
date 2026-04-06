@@ -209,12 +209,16 @@
       font-family: 'Roboto', sans-serif;
       font-size: 15px;
       font-weight: 400;
-      color: var(--white);
+      color: rgba(255,255,255,0.4);
       line-height: 1.65;
+      transition: color 0.4s ease;
+    }
+
+    .tl-dot.is-lit ~ .tl-phase__content .tl-phase__body {
+      color: var(--white);
     }
 
     .tl-phase__body strong {
-      color: var(--white);
       font-weight: 800;
     }
 
@@ -223,6 +227,10 @@
       vertical-align: super;
       color: rgba(255,255,255,0.4);
       margin-left: 1px;
+    }
+
+    .tl-phase__body strong sup {
+      color: inherit;
     }
 
     /* ─── Divider ─── */
@@ -282,7 +290,8 @@
 
       .tl-phase__name { font-size: 1.25rem; }
 
-      .tl-phase__body { color: rgba(255,255,255,0.6); }
+      .tl-phase__body { transition-delay: 0.2s; }
+
 
       /* Hide desktop horizontal track; mobile uses per-phase connectors */
       .tl-track { display: none; }
@@ -351,12 +360,13 @@
         transition: none !important;
       }
       .tl-track { opacity: 1 !important; }
-      /* All dots lit */
+      /* All dots lit, all body text fully white */
       .tl-dot__badge {
         background: #14243f !important;
         border-color: var(--blue) !important;
       }
       .tl-dot__long { color: var(--blue) !important; }
+      .tl-phase__body { color: var(--white) !important; }
       @media (max-width: 767px) {
         .tl-dot__connector-fill { transform: scaleY(1) !important; }
       }
@@ -413,7 +423,7 @@
                 </div>
               </div>
               <div class="tl-phase__content" id="content2">
-                <p class="tl-phase__body">You&rsquo;ve reached clinical efficacy&mdash;<strong>up to 33% higher testosterone in 60&nbsp;days.</strong><sup>&dagger;</sup> Strength and stamina have made a comeback, cortisol levels are in check, and &ldquo;male drive&rdquo; is up.<sup>*</sup></p>
+                <p class="tl-phase__body">You&rsquo;ve reached clinical efficacy&mdash;<strong>up to 33% higher testosterone in 60&nbsp;days.<sup>&dagger;</sup></strong> Strength and stamina have made a comeback, cortisol levels are in check, and &ldquo;male drive&rdquo; is up.<sup>*</sup></p>
               </div>
               <div class="tl-dot__connector" id="conn2" aria-hidden="true">
                 <div class="tl-dot__connector-fill"></div>
