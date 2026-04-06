@@ -8,7 +8,7 @@
   <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@700;800&family=Roboto:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -85,24 +85,12 @@
       gap: 16px;
     }
 
-    .tl-eyebrow {
-      display: block;
-      font-family: 'Roboto', sans-serif;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--muted);
-      opacity: 0;
-      transform: translateY(10px);
-    }
-
     .tl-title {
-      font-family: 'League Spartan', sans-serif;
-      font-size: clamp(2.4rem, 4.5vw, 3.5rem);
-      font-weight: 800;
+      font-family: 'Roboto', sans-serif;
+      font-size: 50px;
+      font-weight: 700;
       color: var(--white);
-      line-height: 1.05;
+      line-height: 54px;
       letter-spacing: -0.01em;
       opacity: 0;
       transform: translateY(20px);
@@ -157,11 +145,11 @@
 
     /* ─── Phase name ─── */
     .tl-phase__name {
-      font-family: 'League Spartan', sans-serif;
-      font-size: 1.375rem;
+      font-family: 'Roboto', sans-serif;
+      font-size: 20px;
       font-weight: 600;
       color: var(--white);
-      line-height: 1.22;
+      line-height: 24px;
       opacity: 0;
       transform: translateY(10px);
     }
@@ -221,13 +209,13 @@
       font-family: 'Roboto', sans-serif;
       font-size: 15px;
       font-weight: 400;
-      color: rgba(255,255,255,0.6);
+      color: var(--white);
       line-height: 1.65;
     }
 
     .tl-phase__body strong {
       color: var(--white);
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .tl-phase__body sup {
@@ -290,7 +278,11 @@
         gap: 14px;
       }
 
-      .tl-eyebrow { font-size: 11px; letter-spacing: 0.08em; }
+      .tl-title { font-size: 38px; font-weight: 800; line-height: 1.05; }
+
+      .tl-phase__name { font-size: 1.25rem; }
+
+      .tl-phase__body { color: rgba(255,255,255,0.6); }
 
       /* Hide desktop horizontal track; mobile uses per-phase connectors */
       .tl-track { display: none; }
@@ -351,7 +343,7 @@
 
     /* ─── Reduced motion ─── */
     @media (prefers-reduced-motion: reduce) {
-      .tl-eyebrow, .tl-title,
+      .tl-title,
       .tl-phase__name, .tl-dot,
       .tl-phase__content, .tl-cta {
         opacity: 1 !important;
@@ -384,7 +376,6 @@
 
         <!-- ── Header ── -->
         <header class="tl-header">
-          <span class="tl-eyebrow">The Results Timeline</span>
           <h2 class="tl-title">Higher T In Just <span class="accent">2&ndash;3 Months</span></h2>
         </header>
 
@@ -500,8 +491,7 @@
       });
 
       /* 0.00–0.10 : Header */
-      tl.to('.tl-eyebrow', { opacity: 1, y: 0, ease: 'power2.out', duration: 0.08 }, 0.00)
-        .to('.tl-title',   { opacity: 1, y: 0, ease: 'power2.out', duration: 0.10 }, 0.03);
+      tl.to('.tl-title', { opacity: 1, y: 0, ease: 'power2.out', duration: 0.10 }, 0.00);
 
       /* 0.10–0.12 : Reveal track + month names + badges */
       tl.to('.tl-track',       { opacity: 1, ease: 'power2.out', duration: 0.06 }, 0.10)
@@ -534,13 +524,8 @@
     mm.add('(max-width: 767px)', () => {
 
       // Header
-      gsap.to('.tl-eyebrow', {
-        opacity: 1, y: 0, ease: 'power2.out', duration: 0.6,
-        scrollTrigger: { trigger: '.tl-header', start: 'top 85%' }
-      });
       gsap.to('.tl-title', {
         opacity: 1, y: 0, ease: 'power2.out', duration: 0.6,
-        delay: 0.1,
         scrollTrigger: { trigger: '.tl-header', start: 'top 85%' }
       });
 
@@ -554,19 +539,32 @@
 
         const trigger = {
           trigger: phase,
-          start: 'top 80%',
-          onEnter: () => {
-            dot.classList.add('is-lit');
-            if (i > 0) {
-              const prevFill = document.querySelector('#conn' + i + ' .tl-dot__connector-fill');
-              if (prevFill) gsap.to(prevFill, { scaleY: 1, ease: 'none', duration: 0.45 });
-            }
-          }
+          start: 'top 80%'
         };
 
-        // Name + badge reveal
+        // Name + badge reveal — dot lights up (is-lit) only after it has fully faded in
         gsap.to(name, { opacity: 1, y: 0, ease: 'power2.out', duration: 0.45, scrollTrigger: trigger });
-        gsap.to(dot,  { opacity: 1, ease: 'power2.out', duration: 0.45, delay: 0.08, scrollTrigger: trigger });
+        gsap.to(dot,  {
+          opacity: 1, ease: 'power2.out', duration: 0.45, delay: 0.08,
+          scrollTrigger: trigger,
+          onComplete: () => {
+            if (i > 0) {
+              // Fill the connector line first, then light up the pill
+              const prevFill = document.querySelector('#conn' + i + ' .tl-dot__connector-fill');
+              if (prevFill) {
+                gsap.to(prevFill, {
+                  scaleY: 1, ease: 'none', duration: 0.45,
+                  onComplete: () => dot.classList.add('is-lit')
+                });
+              } else {
+                dot.classList.add('is-lit');
+              }
+            } else {
+              // Phase 1 — no incoming connector, light up immediately
+              dot.classList.add('is-lit');
+            }
+          }
+        });
 
         // Body text — slightly after
         gsap.to(content, { opacity: 1, y: 0, ease: 'power2.out', duration: 0.55, delay: 0.15, scrollTrigger: trigger });
