@@ -15,8 +15,6 @@
 
     :root {
       --blue:        #00b1ff;
-      --green:       #19d95c;
-      --green-hover: #17c452;
       --navy:        #161a30;
       --white:       #ffffff;
       --muted:       #777777;
@@ -232,44 +230,6 @@
       color: inherit;
     }
 
-    /* ─── Divider ─── */
-    .tl-divider {
-      width: 100%;
-      height: 1px;
-      background: rgba(255,255,255,0.1);
-      margin: 80px 0;
-      opacity: 0;
-    }
-
-    /* ─── CTA block ─── */
-    .tl-cta {
-      text-align: center;
-      opacity: 0;
-      transform: translateY(14px);
-    }
-
-    /* Pill button */
-    .tl-btn {
-      display: inline-block;
-      background: var(--green);
-      color: var(--white);
-      font-family: 'Roboto', sans-serif;
-      font-size: 16px;
-      font-weight: 900;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 14.5px 30px;
-      border: none;
-      border-radius: 50px;
-      text-decoration: none;
-      cursor: pointer;
-      min-width: 200px;
-      transition: background 0.2s;
-    }
-
-    .tl-btn:hover {
-      background: var(--green-hover);
-    }
 
     /* ══════════════════════════════════════════
        MOBILE  (≤ 767px)
@@ -340,17 +300,14 @@
         transform-origin: top center;
       }
 
-      /* Divider hidden on mobile; CTA gets its own top spacing */
-      .tl-divider { display: none; }
-      .tl-cta { margin-top: 48px; }
 
-    }
+}
 
     /* ─── Reduced motion ─── */
     @media (prefers-reduced-motion: reduce) {
       .tl-title,
       .tl-phase__name, .tl-dot,
-      .tl-phase__content, .tl-cta {
+      .tl-phase__content {
         opacity: 1 !important;
         transform: none !important;
         transition: none !important;
@@ -443,13 +400,6 @@
           </div>
         </div>
 
-        <!-- ── Divider ── -->
-        <div class="tl-divider" id="tlDivider" aria-hidden="true"></div>
-
-        <!-- ── CTA ── -->
-        <div class="tl-cta" id="tlCta">
-          <a class="tl-btn" href="#">Start Now</a>
-        </div>
 
       </div>
     </div>
@@ -520,9 +470,6 @@
       /* 0.78–0.88 : Phase 03 */
       tl.to('#content3', { opacity: 1, y: 0, ease: 'power2.out', duration: 0.14 }, 0.80);
 
-      /* 0.88–1.00 : Divider + CTA */
-      tl.to('#tlDivider', { opacity: 1, duration: 0.06 }, 0.88)
-        .to('#tlCta',     { opacity: 1, y: 0, ease: 'power2.out', duration: 0.10 }, 0.92);
 
     });
 
@@ -573,12 +520,6 @@
 
         // Body text — slightly after
         gsap.to(content, { opacity: 1, y: 0, ease: 'power2.out', duration: 0.55, delay: 0.15, scrollTrigger: trigger });
-      });
-
-      // CTA
-      gsap.to('#tlCta', {
-        opacity: 1, y: 0, ease: 'power2.out', duration: 0.5,
-        scrollTrigger: { trigger: '#tlCta', start: 'top 90%' }
       });
 
     });
